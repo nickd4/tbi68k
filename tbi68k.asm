@@ -50,8 +50,8 @@ gobye:	bra.l	byebye		; Jump to monitor, DOS, etc.
 ;
 ; Modifiable system constants:
 ;
-txtbgn:	.dl	txt		; beginning of program memory
-endmem:	.dl	0x8000		; end of available memory
+txtbgn:	.long	txt		; beginning of program memory
+endmem:	.long	0x8000		; end of available memory
 ;
 ; The main interpreter starts here:
 ;
@@ -145,81 +145,81 @@ st4:	move.l	a4,d0		; calculate the length of new line
 ; executed if none of the other table items are matched.
 ;
 ; Character-matching tables:
-tab1:	.db	'L,'I,'S,('T+0x80)	; Direct commands
-	.db	'L,'O,'A,('D+0x80)
-	.db	'N,'E,('W+0x80)
-	.db	'R,'U,('N+0x80)
-	.db	'S,'A,'V,('E+0x80)
-tab2:	.db	'N,'E,'X,('T+0x80)	; Direct / statement
-	.db	'L,'E,('T+0x80)
-	.db	'I,('F+0x80)
-	.db	'G,'O,'T,('O+0x80)
-	.db	'G,'O,'S,'U,('B+0x80)
-	.db	'R,'E,'T,'U,'R,('N+0x80)
-	.db	'R,'E,('M+0x80)
-	.db	'F,'O,('R+0x80)
-	.db	'I,'N,'P,'U,('T+0x80)
-	.db	'P,'R,'I,'N,('T+0x80)
-	.db	'P,'O,'K,('E+0x80)
-	.db	'S,'T,'O,('P+0x80)
-	.db	'B,'Y,('E+0x80)
-	.db	'C,'A,'L,('L+0x80)
-	.db	0
-tab4:	.db	'P,'E,'E,('K+0x80)	; Functions
-	.db	'R,'N,('D+0x80)
-	.db	'A,'B,('S+0x80)
-	.db	'S,'I,'Z,('E+0x80)
-	.db	0
-tab5:	.db	'T,('O+0x80)		; "TO" in "FOR"
-	.db	0
-tab6:	.db	'S,'T,'E,('P+0x80)	; "STEP" in "FOR"
-	.db	0
-tab8:	.db	'>,('=+0x80)		; Relational operators
-	.db	'<,('>+0x80)
-	.db	('>+0x80)
-	.db	('=+0x80)
-	.db	'<,('=+0x80)
-	.db	('<+0x80)
-	.db	0
-	.db	0	; <- for aligning on a word boundary
+tab1:	.byte	'L,'I,'S,('T+0x80)	; Direct commands
+	.byte	'L,'O,'A,('D+0x80)
+	.byte	'N,'E,('W+0x80)
+	.byte	'R,'U,('N+0x80)
+	.byte	'S,'A,'V,('E+0x80)
+tab2:	.byte	'N,'E,'X,('T+0x80)	; Direct / statement
+	.byte	'L,'E,('T+0x80)
+	.byte	'I,('F+0x80)
+	.byte	'G,'O,'T,('O+0x80)
+	.byte	'G,'O,'S,'U,('B+0x80)
+	.byte	'R,'E,'T,'U,'R,('N+0x80)
+	.byte	'R,'E,('M+0x80)
+	.byte	'F,'O,('R+0x80)
+	.byte	'I,'N,'P,'U,('T+0x80)
+	.byte	'P,'R,'I,'N,('T+0x80)
+	.byte	'P,'O,'K,('E+0x80)
+	.byte	'S,'T,'O,('P+0x80)
+	.byte	'B,'Y,('E+0x80)
+	.byte	'C,'A,'L,('L+0x80)
+	.byte	0
+tab4:	.byte	'P,'E,'E,('K+0x80)	; Functions
+	.byte	'R,'N,('D+0x80)
+	.byte	'A,'B,('S+0x80)
+	.byte	'S,'I,'Z,('E+0x80)
+	.byte	0
+tab5:	.byte	'T,('O+0x80)		; "TO" in "FOR"
+	.byte	0
+tab6:	.byte	'S,'T,'E,('P+0x80)	; "STEP" in "FOR"
+	.byte	0
+tab8:	.byte	'>,('=+0x80)		; Relational operators
+	.byte	'<,('>+0x80)
+	.byte	('>+0x80)
+	.byte	('=+0x80)
+	.byte	'<,('=+0x80)
+	.byte	('<+0x80)
+	.byte	0
+	.byte	0	; <- for aligning on a word boundary
 
 ; Execution address tables:
-tab1.1:	.dw	list			; Direct commands
-	.dw	load
-	.dw	new
-	.dw	run
-	.dw	save
-tab2.1:	.dw	next			; Direct / statement
-	.dw	let
-	.dw	if
-	.dw	goto
-	.dw	gosub
-	.dw	return
-	.dw	rem
-	.dw	for
-	.dw	input
-	.dw	print
-	.dw	poke
-	.dw	stop
-	.dw	gobye
-	.dw	call
-	.dw	deflt
-tab4.1:	.dw	peek			; Functions
-	.dw	rnd
-	.dw	abs
-	.dw	size
-	.dw	xp40
-tab5.1:	.dw	fr1			; "TO" in "FOR"
-	.dw	qwhat
-tab6.1:	.dw	fr2			; "STEP" in "FOR"
-	.dw	fr3
-tab8.1:	.dw	xp11	; >=		; Relational operators
-	.dw	xp12	; <>
-	.dw	xp13	; >
-	.dw	xp15	; =
-	.dw	xp14	; <=
-	.dw	xp16	; <
-	.dw	xp17
+tab1.1:	.word	list			; Direct commands
+	.word	load
+	.word	new
+	.word	run
+	.word	save
+tab2.1:	.word	next			; Direct / statement
+	.word	let
+	.word	if
+	.word	goto
+	.word	gosub
+	.word	return
+	.word	rem
+	.word	for
+	.word	input
+	.word	print
+	.word	poke
+	.word	stop
+	.word	gobye
+	.word	call
+	.word	deflt
+tab4.1:	.word	peek			; Functions
+	.word	rnd
+	.word	abs
+	.word	size
+	.word	xp40
+tab5.1:	.word	fr1			; "TO" in "FOR"
+	.word	qwhat
+tab6.1:	.word	fr2			; "STEP" in "FOR"
+	.word	fr3
+tab8.1:	.word	xp11	; >=		; Relational operators
+	.word	xp12	; <>
+	.word	xp13	; >
+	.word	xp15	; =
+	.word	xp14	; <=
+	.word	xp16	; <
+	.word	xp17
 ;
 direct:	lea	tab1,a1
 	lea	tab1.1,a2
@@ -365,27 +365,27 @@ ls3:	bsr.l	fndlnp		; find the next line
 
 print:	move	#11,d4		; D4 = number of print spaces
 	bsr.l	tstc		; if null list and ":"
-	.db	':,pr2-.
+	.byte	':,pr2-.
 	bsr.l	crlf		; give CR-LF and continue
 	bra	runsml		; execution on the same line
 pr2:	bsr.l	tstc		; if null list and <CR>
-	.db	cr,pr0-.
+	.byte	cr,pr0-.
 	bsr.l	crlf		; also give CR-LF and
 	bra	runnxl		; execute the next line
 pr0:	bsr.l	tstc		; else is it a format?
-	.db	'#,pr1-.
+	.byte	'#,pr1-.
 	bsr.l	expr		; yes, evaluate expression
 	move	d0,d4		; and save it as print width
 	bra	pr3		; look for more to print
 pr1:	bsr.l	tstc		; is character expression? (MRL)
-	.db	'$,pr4-.
+	.byte	'$,pr4-.
 	bsr.l	expr		; yep. Evaluate expression (MRL)
 	bsr	goout		; print low byte (MRL)
 	bra	pr3		; look for more. (MRL)
 pr4:	bsr.l	qtstg		; is it a string?
 	bra.s	pr8		; if not, must be an expression
 pr3:	bsr.l	tstc		; if ",", go find next
-	.db	',,pr6-.
+	.byte	',,pr6-.
 	bsr.l	fin		; in the list.
 	bra	pr0
 pr6:	bsr.l	crlf		; list ends here
@@ -613,7 +613,7 @@ ip3:	move.l	a0,-(sp)	; save in case of error
 	move.l	(sp)+,a0	; and the old text pointer
 ip4:	addq.l	#4,sp		; clean up the stack
 	bsr.l	tstc		; is the next thing a comma?
-	.db	',,ip5-.
+	.byte	',,ip5-.
 	bra	input		; yes, more items
 ip5:	bra	finish
 
@@ -622,7 +622,7 @@ deflt:	cmp.b	#cr,(a0)	; empty line is OK
 
 let:	bsr.l	setval		; do the assignment
 	bsr.l	tstc		; check for more 'LET' items
-	.db	',,lt1-.
+	.byte	',,lt1-.
 	bra	let
 lt1:	bra	finish		; until we are finished.
 
@@ -730,7 +730,7 @@ pbyte2:	bsr	goauxo		; send it out
 ;
 poke:	bsr	expr		; get the memory address
 	bsr.l	tstc		; it must be followed by a comma
-	.db	',,pker-.
+	.byte	',,pker-.
 	move.l	d0,-(sp)	; save the address
 	bsr	expr		; get the byte to be POKE'd
 	move.l	(sp)+,a1	; get the address back
@@ -817,14 +817,14 @@ xp18:	move.l	(sp)+,d0	; reverse the top two stack items
 	rts			; return the result
 
 expr2:	bsr.l	tstc		; negative sign?
-	.db	'-,xp21-.
+	.byte	'-,xp21-.
 	clr.l	d0		; yes, fake '0-'
 	bra	xp26
 xp21:	bsr.l	tstc		; positive sign? ignore it
-	.db	'+,xp22-.
+	.byte	'+,xp22-.
 xp22:	bsr	expr3		; first <EXPR3>
 xp23:	bsr.l	tstc		; add?
-	.db	'+,xp25-.
+	.byte	'+,xp25-.
 	move.l	d0,-(sp)	; yes, save the value
 	bsr	expr3		; get the second <EXPR3>
 xp24:	move.l	(sp)+,d1
@@ -832,7 +832,7 @@ xp24:	move.l	(sp)+,d1
 	bvs.l	qhow		; branch if there's an overflow
 	bra	xp23		; else go back for more operations
 xp25:	bsr.l	tstc		; subtract?
-	.db	'-,xp42-.
+	.byte	'-,xp42-.
 xp26:	move.l	d0,-(sp)	; yes, save the result of 1st <EXPR3>
 	bsr	expr3		; get second <EXPR3>
 	neg.l	d0		; change its sign
@@ -840,14 +840,14 @@ xp26:	move.l	d0,-(sp)	; yes, save the result of 1st <EXPR3>
 
 expr3:	bsr	expr4		; get first <EXPR4>
 xp31:	bsr.l	tstc		; multiply?
-	.db	'*,xp34-.
+	.byte	'*,xp34-.
 	move.l	d0,-(sp)	; yes, save that first result
 	bsr	expr4		; get second <EXPR4>
 	move.l	(sp)+,d1
 	bsr.l	mult32		; multiply the two
 	bra	xp31		; then look for more terms
 xp34:	bsr.l	tstc		; divide?
-	.db	'/,xp42-.
+	.byte	'/,xp42-.
 	move.l	d0,-(sp)	; save result of 1st <EXPR4>
 	bsr	expr4		; get second <EXPR4>
 	move.l	(sp)+,d1
@@ -869,10 +869,10 @@ xp41:	bsr.l	tstnum		; or is it a number?
 	tst	d2		; (if not, # of digits will be zero)
 	bne	exp4rt		; if so, return it in D0
 parn:	bsr.l	tstc		; else look for ( EXPR )
-	.db	'(,xp43-.
+	.byte	'(,xp43-.
 	bsr	expr
 	bsr.l	tstc
-	.db	'),xp43-.
+	.byte	'),xp43-.
 xp42:	rts
 xp43:	bra.l	qwhat		; else say "What?"
 
@@ -1059,7 +1059,7 @@ setval:	bsr	tstv		; variable name?
 	bcs	qwhat		; if not, say "What?"
 	move.l	d0,-(sp)	; save the variable's address
 	bsr.l	tstc		; get past the "=" sign
-	.db	'=,sv1-.
+	.byte	'=,sv1-.
 	bsr	expr		; evaluate the expression
 	move.l	(sp)+,a6
 	move.l	d0,(a6) 	; and save its value in the variable
@@ -1067,11 +1067,11 @@ setval:	bsr	tstv		; variable name?
 sv1:	bra	qwhat		; if no "=" sign
 
 fin:	bsr.l	tstc		; *** FIN ***
-	.db	':,fi1-.
+	.byte	':,fi1-.
 	addq.l	#4,sp		; if ":", discard return address
 	bra	runsml		; continue on the same line
 fi1:	bsr.l	tstc		; not ":", is it a CR?
-	.db	cr,fi2-.
+	.byte	cr,fi2-.
 	addq.l	#4,sp		; yes, purge return address
 	bra	runnxl		; execute the next line
 fi2:	rts			; else return to the caller
@@ -1289,7 +1289,7 @@ ps1:	move.b	(a1)+,d0	; get a text character
 prtret:	rts			; then return
 
 qtstg:	bsr.l	tstc		; *** QTSTG ***
-	.db	'",qt3-.
+	.byte	'",qt3-.
 	move.b	#'",d0		; it is a "
 qt1:	move.l	a0,a1
 	bsr	prtstg		; print until another
@@ -1300,11 +1300,11 @@ qt1:	move.l	a0,a1
 qt2:	addq.l	#2,a1		; skip 2 bytes on return
 	jmp	(a1)		; return
 qt3:	bsr.l	tstc		; is it a single quote?
-	.db	'',qt4-.
+	.byte	'',qt4-.
 	move.b	#'',d0	; if so, do same as above
 	bra	qt1
 qt4:	bsr.l	tstc		; is it an underline?
-	.db	'_,qt5-.
+	.byte	'_,qt5-.
 	move.b	#cr,d0		; if so, output a CR without LF
 	bsr.l	goout
 	move.l	(sp)+,a1	; pop return address
@@ -1546,29 +1546,29 @@ byebye:	move.b	#228,d7 	; return to Tutor
 	trap	#14
 
 initmsg:
-	.db	cr,lf,'G,'o,'r,'d,'o,'','s,' ,'M,'C,'6,'8,'0,'0,'0,' ,'T,'i,'n,'y,' ,'B,'A,'S,'I,'C,',,' ,'v,'1,'.,'2,cr,lf,lf,0
-okmsg:	.db	cr,lf,'O,'K,cr,lf,0
-howmsg:	.db	'H,'o,'w,'?,cr,lf,0
-whtmsg:	.db	'W,'h,'a,'t,'?,cr,lf,0
-srymsg:	.db	'S,'o,'r,'r,'y,'.
-clmsg:	.db	cr,lf,0
-	.db	0	; <- for aligning on a word boundary
+	.byte	cr,lf,'G,'o,'r,'d,'o,'','s,' ,'M,'C,'6,'8,'0,'0,'0,' ,'T,'i,'n,'y,' ,'B,'A,'S,'I,'C,',,' ,'v,'1,'.,'2,cr,lf,lf,0
+okmsg:	.byte	cr,lf,'O,'K,cr,lf,0
+howmsg:	.byte	'H,'o,'w,'?,cr,lf,0
+whtmsg:	.byte	'W,'h,'a,'t,'?,cr,lf,0
+srymsg:	.byte	'S,'o,'r,'r,'y,'.
+clmsg:	.byte	cr,lf,0
+	.byte	0	; <- for aligning on a word boundary
 lstrom	=	.		; end of possible ROM area
 ;
 ; Internal variables follow:
 ;
-ranpnt:	.dl	start		; random number pointer
-currnt:	.ds	4		; Current line pointer
-stkgos:	.ds	4		; Saves stack pointer in 'GOSUB'
-stkinp:	.ds	4		; Saves stack pointer during 'INPUT'
-lopvar:	.ds	4		; 'FOR' loop save area
-lopinc:	.ds	4		; increment
-loplmt:	.ds	4		; limit
-lopln:	.ds	4		; line number
-loppt:	.ds	4		; text pointer
-txtunf:	.ds	4		; points to unfilled text area
-varbgn:	.ds	4		; points to variable area
-stklmt:	.ds	4		; holds lower limit for stack growth
-buffer:	.ds	buflen		; Keyboard input buffer
+ranpnt:	.long	start		; random number pointer
+currnt:	.blkl	1		; Current line pointer
+stkgos:	.blkl	1		; Saves stack pointer in 'GOSUB'
+stkinp:	.blkl	1		; Saves stack pointer during 'INPUT'
+lopvar:	.blkl	1		; 'FOR' loop save area
+lopinc:	.blkl	1		; increment
+loplmt:	.blkl	1		; limit
+lopln:	.blkl	1		; line number
+loppt:	.blkl	1		; text pointer
+txtunf:	.blkl	1		; points to unfilled text area
+varbgn:	.blkl	1		; points to variable area
+stklmt:	.blkl	1		; holds lower limit for stack growth
+buffer:	.blkb	buflen		; Keyboard input buffer
 txt	=	.		; Beginning of program area
 	.end

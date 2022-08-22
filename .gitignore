@@ -1,2 +1,5 @@
+*.lst
+*.hlr
 *.rel
+*.rst
 *.s37
