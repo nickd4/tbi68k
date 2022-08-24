@@ -1,5 +1,5 @@
 tbi68k.s37: tbi68k.rel
-	./aslink -p0 -a text=0x900 -s $<
+	./aslink -p0 -s -u $<
 
 tbi68k.rel: tbi68k.asm
 	./as68k -l $<

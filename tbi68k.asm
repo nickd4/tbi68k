@@ -34,7 +34,8 @@ ctrlx	=	0x18
 
 buflen	=	80		; length of keyboard input buffer
 
-	.area	text		; org 0x900, first free address using Tutor
+	.area	text (abs)
+	.org	0x900		; first free address using Tutor
 
 ;
 ; Standard jump table. You can change these addresses if you are
@@ -78,14 +79,14 @@ st3:	move.b	#'>,d0		; Prompt with a '>' and
 	lea	buffer,a0	; point to the beginning of line
 	bsr.l	tstnum		; is there a number there?
 	bsr.l	ignblk		; skip trailing blanks
-	tst	d1		; does line no. exist? (or nonzero?)
+	tst.w	d1		; does line no. exist? (or nonzero?)
 	beq.l	direct		; if not, it's a direct statement
 	cmp.l	#0xffff,d1	; see if line no. is <= 16 bits
 	bcc.l	qhow		; if not, we've overflowed
 	move.b	d1,-(a0)	; store the binary line no.
-	ror	#8,d1		; (Kludge to store a word on a
+	ror.w	#8,d1		; (Kludge to store a word on a
 	move.b	d1,-(a0)	; possible byte boundary)
-	rol	#8,d1
+	rol.w	#8,d1
 	bsr.l	fndln		; find this line in save area
 	move.l	a1,a5		; save possible line pointer
 	bne	st4		; if not found, insert
@@ -248,7 +249,7 @@ exmat:	moveq	#-1,d2		; we've got a match so far
 	tst.b	(a1)+		; end of table entry?
 	bpl	exlp		; if not, go back for more
 exgo:	lea	0,a3		; execute the appropriate routine
-	move	(a2),a3
+	move.w	(a2),a3
 	jmp	(a3)
 ;
 ;******************************************************************
@@ -363,7 +364,7 @@ ls2:	bsr.l	chkio		; if so, wait for another keypress
 ls3:	bsr.l	fndlnp		; find the next line
 	bra	ls1
 
-print:	move	#11,d4		; D4 = number of print spaces
+print:	move.w	#11,d4		; D4 = number of print spaces
 	bsr.l	tstc		; if null list and ":"
 	.byte	':,pr2-.
 	bsr.l	crlf		; give CR-LF and continue
@@ -375,7 +376,7 @@ pr2:	bsr.l	tstc		; if null list and <CR>
 pr0:	bsr.l	tstc		; else is it a format?
 	.byte	'#,pr1-.
 	bsr.l	expr		; yes, evaluate expression
-	move	d0,d4		; and save it as print width
+	move.w	d0,d4		; and save it as print width
 	bra	pr3		; look for more to print
 pr1:	bsr.l	tstc		; is character expression? (MRL)
 	.byte	'$,pr4-.
@@ -390,9 +391,9 @@ pr3:	bsr.l	tstc		; if ",", go find next
 	bra	pr0
 pr6:	bsr.l	crlf		; list ends here
 	bra	finish
-pr8:	move	d4,-(sp)	; save the width value
+pr8:	move.w	d4,-(sp)	; save the width value
 	bsr.l	expr		; evaluate the expression
-	move	(sp)+,d4	; restore the width
+	move.w	(sp)+,d4	; restore the width
 	move.l	d0,d1
 	bsr.l	prtnum		; print its value
 	bra	pr3		; more to print?
@@ -662,10 +663,10 @@ lodend:	move.l	a0,txtunf	; set end-of program pointer
 	bra	wstart		; back to direct mode
 
 gbyte:	moveq	#1,d2		; get two hex characters from auxiliary
-	clr	d1		; and store them as a byte in D1
+	clr.w	d1		; and store them as a byte in D1
 gbyte1:	bsr	goauxi		; get a char.
 	beq	gbyte1
-	cmp.b	#'a,d0
+	cmp.b	#'A,d0
 	bcs	gbyte2
 	subq.b	#7,d0		; if greater than 9, adjust
 gbyte2:	and.b	#0xf,d0		; strip ASCII
@@ -866,7 +867,7 @@ xp40:	bsr	tstv		; nope, not a function
 exp4rt:	rts
 xp41:	bsr.l	tstnum		; or is it a number?
 	move.l	d1,d0
-	tst	d2		; (if not, # of digits will be zero)
+	tst.w	d2		; (if not, # of digits will be zero)
 	bne	exp4rt		; if so, return it in D0
 parn:	bsr.l	tstc		; else look for ( EXPR )
 	.byte	'(,xp43-.
@@ -887,7 +888,7 @@ tstv:	bsr.l	ignblk
 	sub.b	#'@,d0
 	bcs	tstvrt		; C=1: not a variable
 	bne	tv1		; branch if not "@" array
-	addq	#1,a0		; If it is, it should be
+	addq.w	#1,a0		; If it is, it should be
 	bsr	parn		; followed by (EXPR) as its index.
 	add.l	d0,d0
 	bcs.l	qhow		; say "How?" if index is too big
@@ -904,11 +905,11 @@ tstv:	bsr.l	ignblk
 tv1:	cmp.b	#27,d0		; if not @, is it A through Z?
 	eor	#1,ccr
 	bcs	tstvrt		; if not, set Carry and return
-	addq	#1,a0		; else bump the text pointer
-	add	d0,d0		; compute the variable's address
-	add	d0,d0
+	addq.w	#1,a0		; else bump the text pointer
+	add.w	d0,d0		; compute the variable's address
+	add.w	d0,d0
 	move.l	varbgn,d1
-	add	d1,d0		; and return it in D0 with Carry=0
+	add.w	d1,d0		; and return it in D0 with Carry=0
 tstvrt:	rts
 
 ;
@@ -928,13 +929,13 @@ mlt2:	cmp.l	#0xffff,d1	; is second argument <= 16 bits?
 	exg	d0,d1		; else swap the two arguments
 	cmp.l	#0xffff,d1	; and check 2nd argument again
 	bhi.l	qhow		; one of them MUST be 16 bits
-mlt3:	move	d0,d2		; prepare for 32 bit X 16 bit multiply
+mlt3:	move.w	d0,d2		; prepare for 32 bit X 16 bit multiply
 	mulu	d1,d2		; multiply low word
 	swap	d0
 	mulu	d1,d0		; multiply high word
 	swap	d0
 ;** Rick Murray's bug correction follows:
-	tst	d0		; if lower word not 0, then overflow
+	tst.w	d0		; if lower word not 0, then overflow
 	bne.l	qhow		; if overflow, say "How?"
 	add.l	d2,d0		; D0 now holds the product
 	bmi.l	qhow		; if sign bit set, it's an overflow
@@ -1096,7 +1097,7 @@ error:	bsr.l	prmesg		; display the error message
 	move.b	(sp)+,(a0)	; restore the character
 	move.b	#'?,d0		; display a "?"
 	bsr	goout
-	clr	d0
+	clr.w	d0
 	subq.l	#1,a1		; point back to the error char.
 	bsr.l	prtstg		; display the rest of the line
 	bra	wstart		; and do a warm start
@@ -1167,7 +1168,7 @@ gl3:	move.b	#ctrlh,d0	; delete a char. if possible
 gl4:	move.l	a0,d1		; delete the whole line
 	sub.l	#buffer,d1	; figure out how many backspaces we need
 	beq	gl6		; if none needed, branch
-	subq	#1,d1		; adjust for DBRA
+	subq.w	#1,d1		; adjust for DBRA
 gl5:	move.b	#ctrlh,d0	; and display BS-space-BS sequences
 	bsr	goout
 	move.b	#' ,d0
@@ -1187,13 +1188,13 @@ fndln:	cmp.l	#0xffff,d1	; line no. must be < 65535
 
 fndlnp:	move.l	txtunf,a2	; check if we passed the end
 	subq.l	#1,a2
-	cmp	a1,a2
+	cmp.w	a1,a2
 	bcs	fndret		; if so, return with Z=0 & C=1
 	move.b	(a1)+,d2	; if not, get a line no.
-	lsl	#8,d2
+	lsl.w	#8,d2
 	move.b	(a1),d2
 	subq.l	#1,a1
-	cmp	d1,d2		; is this the line we want?
+	cmp.w	d1,d2		; is this the line we want?
 	bcs	fndnxt		; no, not there yet
 fndret:	rts			; return the cond. codes
 
@@ -1312,36 +1313,36 @@ qt4:	bsr.l	tstc		; is it an underline?
 qt5:	rts			; none of the above
 
 prtnum:	move.l	d1,d3		; save the number for later
-	move	d4,-(sp)	; save the width value
+	move.w	d4,-(sp)	; save the width value
 	move.b	#0xff,-(sp)	; flag for end of digit string
 	tst.l	d1		; is it negative?
 	bpl	pn1		; if not
 	neg.l	d1		; else make it positive
-	subq	#1,d4		; one less for width count
+	subq.w	#1,d4		; one less for width count
 pn1:	divu	#10,d1		; get the next digit
 	bvs	pnov		; overflow flag set?
 	move.l	d1,d0		; if not, save remainder
 	and.l	#0xffff,d1	; strip the remainder
 	bra	toascii 	; skip the overflow stuff
-pnov:	move	d1,d0		; prepare for long word division
+pnov:	move.w	d1,d0		; prepare for long word division
 	clr.w	d1		; zero out low word
 	swap	d1		; high word into low
 	divu	#10,d1		; divide high word
-	move	d1,d2		; save quotient
-	move	d0,d1		; low word into low
+	move.w	d1,d2		; save quotient
+	move.w	d0,d1		; low word into low
 	divu	#10,d1		; divide low word
 	move.l	d1,d0		; D0 = remainder
 	swap	d1		; R/Q becomes Q/R
-	move	d2,d1		; D1 is low/high
+	move.w	d2,d1		; D1 is low/high
 	swap	d1		; D1 is finally high/low
 toascii:
 	swap	d0		; get remainder
 	move.b	d0,-(sp)	; stack it as a digit
 	swap	d0
-	subq	#1,d4		; decrement width count
+	subq.w	#1,d4		; decrement width count
 	tst.l	d1		; if quotient is zero, we're done
 	bne	pn1
-	subq	#1,d4		; adjust padding count for DBRA
+	subq.w	#1,d4		; adjust padding count for DBRA
 	bmi	pn4		; skip padding if not needed
 pn3:	move.b	#' ,d0		; display the required leading spaces
 	bsr	goout
@@ -1355,18 +1356,18 @@ pn5:	move.b	(sp)+,d0	; now unstack the digits and display
 	add.b	#'0,d0		; make into ASCII
 	bsr	goout
 	bra	pn5
-pnret:	move	(sp)+,d4	; restore width value
+pnret:	move.w	(sp)+,d4	; restore width value
 	rts
 
 prtln:	clr.l	d1
 	move.b	(a1)+,d1	; get the binary line number
-	lsl	#8,d1
+	lsl.w	#8,d1
 	move.b	(a1)+,d1
 	moveq	#5,d4		; display a 5 digit line no.
 	bsr	prtnum
 	move.b	#' ,d0		; followed by a blank
 	bsr	goout
-	clr	d0		; stop char. is a zero
+	clr.w	d0		; stop char. is a zero
 	bra	prtstg		; display the rest of the line
 
 ;
@@ -1394,7 +1395,7 @@ tc1:	addq.l	#1,a0		; if equal, bump text pointer
 ;	else return zero in D1 and D2.
 ;
 tstnum:	clr.l	d1		; initialize return parameters
-	clr	d2
+	clr.w	d2
 	bsr	ignblk		; skip over blanks
 tn1:	cmp.b	#'0,(a0)	; is it less than zero?
 	bcs	tsnmret 	; if so, that's all
@@ -1410,7 +1411,7 @@ tn1:	cmp.b	#'0,(a0)	; is it less than zero?
 	move.b	(a0)+,d0	; add in the new digit
 	and.l	#0xf,d0
 	add.l	d0,d1
-	addq	#1,d2		; increment the no. of digits
+	addq.w	#1,d2		; increment the no. of digits
 	bra	tn1
 tsnmret:
 	rts
