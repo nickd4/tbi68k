@@ -3,3 +3,6 @@
 *.rel
 *.rst
 *.s37
+/bad
+/diff
+/good
