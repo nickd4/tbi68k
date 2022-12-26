@@ -247,7 +247,7 @@ ex1:	tst.b	(a1)+		; get to the end of the entry
 exmat:	moveq	#-1,d2		; we've got a match so far
 	tst.b	(a1)+		; end of table entry?
 	bpl	exlp		; if not, go back for more
-exgo:	lea	*0,a3		; execute the appropriate routine
+exgo:	lea	0,a3		; execute the appropriate routine
 	move	(a2),a3
 	jmp	(a3)
 ;
@@ -498,7 +498,7 @@ fr7:	move.l	(a6),d0 	; is it zero?
 	bne	fr6		; nope, look some more
 	move.l	sp,a2		; Else remove 5 long words from...
 	move.l	a6,a1		; inside the stack.
-	lea	*20,a3
+	lea	20,a3
 	add.l	a1,a3
 	bsr.l	mvdown
 	move.l	a3,sp		; set the SP 5 long words up
