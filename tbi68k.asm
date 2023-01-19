@@ -34,7 +34,9 @@ ctrlx	=	0x18
 
 buflen	=	80		; length of keyboard input buffer
 
-	.area	text (dpage)	; org 0x900, first free address using Tutor
+	.area	text
+	.setdp	0
+	.blkb	0x900		; org 0x900, first free address using Tutor
 
 ;
 ; Standard jump table. You can change these addresses if you are
